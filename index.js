@@ -62,12 +62,16 @@ io.on("connection", (socket) => {
         { userId, location }
       )
 
+      io.emit("update-deliveryBoy-location", { userId, location })
+
       console.log("📍 LOCATION UPDATED:", res.data)
 
     } catch (err) {
       console.log("❌ LOCATION ERROR:", err.response?.data || err.message)
     }
   })
+
+ 
 
   socket.on("disconnect", async () => {
     console.log(`🔴 DISCONNECTED: ${socket.id}`)
