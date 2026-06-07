@@ -71,7 +71,16 @@ io.on("connection", (socket) => {
     }
   })
 
- 
+ socket.on("join-room",(roomId)=>{
+  console.log(" JOIN ROOM WITH", roomId)
+  socket.join(roomId)
+ })
+
+ socket.on("send-message",async (message)=>{
+  console.log(message)
+  await axios.post(`${process.env.NEXTAUTH_URL}/api/chat/save`,message)
+  io.to(message.roomId).emit("send-message",message)
+ })
 
   socket.on("disconnect", async () => {
     console.log(`🔴 DISCONNECTED: ${socket.id}`)
