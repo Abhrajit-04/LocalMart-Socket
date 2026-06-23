@@ -76,11 +76,35 @@ io.on("connection", (socket) => {
   socket.join(roomId)
  })
 
- socket.on("send-message",async (message)=>{
-  console.log(message)
-  await axios.post(`${process.env.NEXTAUTH_URL}/api/chat/save`,message)
-  io.to(message.roomId).emit("send-message",message)
- })
+ socket.on("send-message", async (message) => {
+
+  if (
+    !message ||
+    !message.roomId ||
+    !message.senderId ||
+    !message.text
+  ) {
+    console.log("Invalid message", message)
+    return
+  }
+
+  try {
+
+    const saved = await axios.post(
+      `${process.env.NEXTAUTH_URL}/api/chat/save`,
+      message
+    )
+
+    io.to(message.roomId).emit(
+      "send-message",
+      saved.data
+    )
+
+  } catch (err) {
+    console.log(err)
+  }
+
+})
 
   socket.on("disconnect", async () => {
     console.log(`🔴 DISCONNECTED: ${socket.id}`)
