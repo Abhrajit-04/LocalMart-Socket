@@ -24,6 +24,7 @@ io.on("connection", (socket) => {
   console.log(`🟢 CONNECTED: ${socket.id}`)
 
   socket.on("identity", async (userId) => {
+    
     if (!userId) {
       console.log("❌ Invalid userId")
       return
@@ -124,8 +125,6 @@ io.on("connection", (socket) => {
 // 🔥 FIXED + ADDED (IMPORTANT FOR REALTIME)
 app.post("/emit", (req, res) => {
   const { event, data, socketId } = req.body
-
-  console.log("📡 EMIT EVENT:", event, data)
 
   if (socketId) {
     io.to(socketId).emit(event, data)
